@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Handles web requests related to Users.
@@ -65,11 +66,12 @@ public class UserController {
 
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+        List<Employee> employees = employeeService.getEmployeesForService(employeeDTO.getDate(), employeeDTO.getSkills());
+        return employees.stream().map(this::convertEmployeeToEmployeeDTO).collect(Collectors.toList());
     }
 
     /*DTO Methods*/
-    private static EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee) {
+    private EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         BeanUtils.copyProperties(employee, employeeDTO);
         return employeeDTO;
