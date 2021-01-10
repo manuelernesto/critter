@@ -28,6 +28,7 @@ public class UserController {
         this.employeeService = employeeService;
     }
 
+    /*Customer*/
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
         throw new UnsupportedOperationException();
@@ -43,6 +44,7 @@ public class UserController {
         throw new UnsupportedOperationException();
     }
 
+    /*Employee*/
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
         Employee employee = convertEmployeeDTOToEmployee(employeeDTO);
@@ -52,7 +54,8 @@ public class UserController {
 
     @PostMapping("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        return convertEmployeeToEmployeeDTO(employee);
     }
 
     @PutMapping("/employee/{employeeId}")

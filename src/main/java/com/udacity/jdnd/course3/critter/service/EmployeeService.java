@@ -26,4 +26,8 @@ public class EmployeeService {
         employeeRepository.save(employee);
     }
 
+    public Employee getEmployeeById(long employeeId) {
+        return employeeRepository.getOne(employeeId);
+    }
+
 }
