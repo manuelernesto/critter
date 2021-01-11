@@ -2,6 +2,7 @@ package com.udacity.jdnd.course3.critter.controller;
 
 import com.udacity.jdnd.course3.critter.entity.Customer;
 import com.udacity.jdnd.course3.critter.entity.Employee;
+import com.udacity.jdnd.course3.critter.entity.Pet;
 import com.udacity.jdnd.course3.critter.entity.dto.CustomerDTO;
 import com.udacity.jdnd.course3.critter.entity.dto.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.entity.dto.EmployeeRequestDTO;
@@ -95,6 +96,7 @@ public class UserController {
     private CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
         CustomerDTO customerDTO = new CustomerDTO();
         BeanUtils.copyProperties(customer, customerDTO);
+        customerDTO.setPetIds(customer.getPets().stream().map(Pet::getId).collect(Collectors.toList()));
         return customerDTO;
     }
 
