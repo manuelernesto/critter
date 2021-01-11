@@ -1,9 +1,11 @@
 package com.udacity.jdnd.course3.critter.controller;
 
+import com.udacity.jdnd.course3.critter.entity.Customer;
 import com.udacity.jdnd.course3.critter.entity.Employee;
 import com.udacity.jdnd.course3.critter.entity.dto.CustomerDTO;
 import com.udacity.jdnd.course3.critter.entity.dto.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.entity.dto.EmployeeRequestDTO;
+import com.udacity.jdnd.course3.critter.service.CustomerService;
 import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -24,25 +26,32 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final EmployeeService employeeService;
+    private final CustomerService customerService;
 
-    public UserController(EmployeeService employeeService) {
+    public UserController(EmployeeService employeeService, CustomerService customerService) {
         this.employeeService = employeeService;
+        this.customerService = customerService;
     }
 
     /*Customer*/
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
-        throw new UnsupportedOperationException();
+        Customer customer = convertCustomerDTOToCustomer(customerDTO);
+        List<Long> petsId = customerDTO.getPetIds();
+        customer = customerService.saveCustomer(customer, petsId);
+        return convertCustomerToCustomerDTO(customer);
     }
 
     @GetMapping("/customer")
     public List<CustomerDTO> getAllCustomers() {
-        throw new UnsupportedOperationException();
+        List<Customer> customers = customerService.getAllCustomers();
+        return customers.stream().map(this::convertCustomerToCustomerDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable long petId) {
-        throw new UnsupportedOperationException();
+        Customer customer = customerService.getCustomerByPet(petId);
+        return convertCustomerToCustomerDTO(customer);
     }
 
     /*Employee*/
@@ -77,9 +86,21 @@ public class UserController {
         return employeeDTO;
     }
 
-    private static Employee convertEmployeeDTOToEmployee(EmployeeDTO employeeDTO) {
+    private Employee convertEmployeeDTOToEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);
         return employee;
+    }
+
+    private CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
+        CustomerDTO customerDTO = new CustomerDTO();
+        BeanUtils.copyProperties(customer, customerDTO);
+        return customerDTO;
+    }
+
+    private Customer convertCustomerDTOToCustomer(CustomerDTO customerDTO) {
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(customerDTO, customer);
+        return customer;
     }
 }
